@@ -1,0 +1,164 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://cortikal.dev/schema/arch-v1.json",
+  "title": "Cortikal arch.md Graph Schema",
+  "description": "JSON Schema for the YAML content inside ```arch code blocks in arch.md files.",
+  "type": "object",
+  "required": ["nodes"],
+  "properties": {
+    "nodes": {
+      "type": "array",
+      "description": "Array of architecture nodes.",
+      "items": {
+        "$ref": "#/definitions/Node"
+      },
+      "minItems": 1
+    },
+    "edges": {
+      "type": "array",
+      "description": "Array of edges connecting nodes.",
+      "items": {
+        "$ref": "#/definitions/Edge"
+      }
+    }
+  },
+  "definitions": {
+    "Node": {
+      "type": "object",
+      "required": ["id", "type", "category", "label", "position"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique node identifier.",
+          "pattern": "^[a-z0-9][a-z0-9-]*$"
+        },
+        "type": {
+          "type": "string",
+          "description": "Node type from the type registry."
+        },
+        "category": {
+          "type": "string",
+          "description": "Node category.",
+          "enum": ["frontend", "backend", "database", "infrastructure", "ai", "integration", "custom"]
+        },
+        "label": {
+          "type": "string",
+          "description": "Human-readable display label."
+        },
+        "position": {
+          "$ref": "#/definitions/Position"
+        },
+        "config": {
+          "type": "object",
+          "description": "Type-specific configuration.",
+          "additionalProperties": true
+        },
+        "inputs": {
+          "type": "array",
+          "description": "Input port definitions.",
+          "items": {
+            "$ref": "#/definitions/Port"
+          }
+        },
+        "outputs": {
+          "type": "array",
+          "description": "Output port definitions.",
+          "items": {
+            "$ref": "#/definitions/Port"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "Port": {
+      "type": "object",
+      "required": ["id", "label", "direction", "dataType"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique port ID within the node."
+        },
+        "label": {
+          "type": "string",
+          "description": "Display label."
+        },
+        "direction": {
+          "type": "string",
+          "enum": ["input", "output"],
+          "description": "Port direction."
+        },
+        "dataType": {
+          "type": "string",
+          "enum": ["string", "number", "boolean", "object", "array", "json", "http", "websocket", "sql", "graphql", "stream", "binary"],
+          "description": "Data type for contract enforcement."
+        },
+        "required": {
+          "type": "boolean",
+          "description": "Whether this port must be connected.",
+          "default": false
+        },
+        "description": {
+          "type": "string",
+          "description": "Optional description."
+        }
+      },
+      "additionalProperties": false
+    },
+    "Edge": {
+      "type": "object",
+      "required": ["id", "sourceNodeId", "sourcePortId", "targetNodeId", "targetPortId", "dataType", "edgeType"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique edge identifier."
+        },
+        "sourceNodeId": {
+          "type": "string",
+          "description": "Source node reference."
+        },
+        "sourcePortId": {
+          "type": "string",
+          "description": "Source port reference."
+        },
+        "targetNodeId": {
+          "type": "string",
+          "description": "Target node reference."
+        },
+        "targetPortId": {
+          "type": "string",
+          "description": "Target port reference."
+        },
+        "dataType": {
+          "type": "string",
+          "enum": ["string", "number", "boolean", "object", "array", "json", "http", "websocket", "sql", "graphql", "stream", "binary"],
+          "description": "Data type flowing through this edge."
+        },
+        "edgeType": {
+          "type": "string",
+          "enum": ["dataflow", "dependency"],
+          "description": "Type of relationship."
+        },
+        "label": {
+          "type": "string",
+          "description": "Optional display label."
+        }
+      },
+      "additionalProperties": false
+    },
+    "Position": {
+      "type": "object",
+      "required": ["x", "y"],
+      "properties": {
+        "x": {
+          "type": "number",
+          "description": "Horizontal canvas position."
+        },
+        "y": {
+          "type": "number",
+          "description": "Vertical canvas position."
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

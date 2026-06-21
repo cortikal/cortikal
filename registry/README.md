@@ -15,3 +15,5 @@ Community-contributed architecture templates for Cortikal.
 | Template | Complexity | Description |
 |----------|-----------|-------------|
 | [web-app-basic](templates/web-app-basic/) | Simple | React + .NET API + PostgreSQL + Redis |
+| [realtime-chat](templates/realtime-chat/) | Moderate | React + Node.js + MongoDB + Redis (WebSocket) |
+| [saas-starter](templates/saas-starter/) | Complex | Next.js + .NET + PostgreSQL + Auth0 + Stripe |
