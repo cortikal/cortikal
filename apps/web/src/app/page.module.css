@@ -1,0 +1,293 @@
+/*
+ * ============================================================
+ * Cortikal — The Spark Page Styles
+ * ============================================================
+ */
+
+.spark {
+  height: 100%;
+  overflow-y: auto;
+  position: relative;
+}
+
+/* ---- Background Glow ---- */
+.backgroundGlow {
+  position: absolute;
+  top: -20%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 800px;
+  height: 600px;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(99, 102, 241, 0.06) 0%,
+    rgba(139, 92, 246, 0.03) 40%,
+    transparent 70%
+  );
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ---- Hero ---- */
+.hero {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-16) var(--space-8) var(--space-8);
+  position: relative;
+  z-index: 1;
+}
+
+.heroContent {
+  max-width: 720px;
+  text-align: center;
+  animation: fadeInUp 600ms ease-out;
+}
+
+.heroTitle {
+  font-size: var(--text-5xl);
+  font-weight: var(--weight-bold);
+  line-height: var(--leading-tight);
+  color: var(--color-text-primary);
+  letter-spacing: -0.03em;
+  margin-bottom: var(--space-4);
+}
+
+.heroTitleGradient {
+  background: var(--gradient-accent);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.heroSubtitle {
+  font-size: var(--text-lg);
+  color: var(--color-text-secondary);
+  line-height: var(--leading-relaxed);
+  max-width: 540px;
+  margin: 0 auto var(--space-8);
+}
+
+/* ---- Prompt Input ---- */
+.promptContainer {
+  animation: fadeInUp 600ms ease-out 200ms both;
+}
+
+.promptInputWrapper {
+  display: flex;
+  align-items: center;
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-xl);
+  padding: var(--space-1) var(--space-1) var(--space-1) var(--space-4);
+  transition: all var(--transition-base);
+  box-shadow: var(--shadow-lg);
+}
+
+.promptInputWrapper:focus-within {
+  border-color: var(--color-accent);
+  box-shadow: var(--shadow-glow), var(--shadow-lg);
+}
+
+.promptIcon {
+  font-size: var(--text-lg);
+  margin-right: var(--space-2);
+  flex-shrink: 0;
+}
+
+.promptInput {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--color-text-primary);
+  font-size: var(--text-base);
+  font-family: var(--font-sans);
+  padding: var(--space-3) 0;
+  min-width: 0;
+}
+
+.promptInput::placeholder {
+  color: var(--color-text-muted);
+}
+
+.promptButton {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  background: var(--gradient-accent);
+  color: white;
+  font-weight: var(--weight-semibold);
+  font-size: var(--text-sm);
+  padding: var(--space-2) var(--space-5);
+  border-radius: var(--radius-lg);
+  white-space: nowrap;
+  transition: all var(--transition-base);
+  cursor: pointer;
+  border: none;
+}
+
+.promptButton:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-glow-accent);
+}
+
+.promptButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.promptButtonIcon {
+  font-size: var(--text-lg);
+  transition: transform var(--transition-fast);
+}
+
+.promptButton:hover:not(:disabled) .promptButtonIcon {
+  transform: translateX(2px);
+}
+
+/* ---- Prompt Hints ---- */
+.promptHints {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.promptHint {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+}
+
+.promptSuggestion {
+  font-size: var(--text-xs);
+  color: var(--color-text-tertiary);
+  background: var(--color-glass);
+  border: 1px solid var(--color-border);
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  font-family: var(--font-sans);
+}
+
+.promptSuggestion:hover {
+  background: var(--color-accent-subtle);
+  border-color: var(--color-accent);
+  color: var(--color-accent-light);
+}
+
+/* ---- Divider ---- */
+.divider {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-4) var(--space-8);
+  max-width: 720px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+.divider::before,
+.divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--color-border);
+}
+
+.dividerText {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  white-space: nowrap;
+}
+
+/* ---- Template Grid ---- */
+.templateSection {
+  padding: var(--space-4) var(--space-8) var(--space-16);
+  max-width: 1000px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+.templateGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--space-4);
+}
+
+.templateCard {
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  text-align: left;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  animation: fadeInUp 400ms ease-out both;
+  font-family: var(--font-sans);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.templateCard:hover {
+  border-color: var(--color-border-strong);
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
+}
+
+.templateCardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.templateIcon {
+  font-size: var(--text-2xl);
+}
+
+.templateComplexity {
+  font-size: 0.65rem;
+  font-weight: var(--weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border: 1px solid;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  opacity: 0.8;
+}
+
+.templateTitle {
+  font-size: var(--text-base);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text-primary);
+}
+
+.templateDescription {
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  line-height: var(--leading-normal);
+}
+
+.templateTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+  margin-top: var(--space-1);
+}
+
+.templateTag {
+  font-size: 0.65rem;
+  font-family: var(--font-mono);
+  color: var(--color-text-tertiary);
+  background: var(--color-glass);
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+}

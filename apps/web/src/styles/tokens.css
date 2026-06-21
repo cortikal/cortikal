@@ -1,0 +1,199 @@
+/*
+ * ============================================================
+ * Cortikal — Design Tokens
+ * ============================================================
+ * Core design system variables for the entire application.
+ * Dark-first design with glassmorphism, vibrant accents, and
+ * premium micro-animations.
+ * ============================================================
+ */
+
+:root {
+  /* ---- Typography ---- */
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", "Fira Code", "Cascadia Code", monospace;
+
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.25rem;
+  --text-2xl: 1.5rem;
+  --text-3xl: 1.875rem;
+  --text-4xl: 2.25rem;
+  --text-5xl: 3rem;
+  --text-6xl: 3.75rem;
+
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-bold: 700;
+
+  --leading-tight: 1.2;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.75;
+
+  /* ---- Spacing ---- */
+  --space-0: 0;
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-20: 5rem;
+  --space-24: 6rem;
+
+  /* ---- Border Radius ---- */
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-2xl: 1.5rem;
+  --radius-full: 9999px;
+
+  /* ---- Shadows ---- */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -2px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -4px rgba(0, 0, 0, 0.4);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.4);
+  --shadow-glow: 0 0 20px rgba(99, 102, 241, 0.15);
+  --shadow-glow-accent: 0 0 30px rgba(139, 92, 246, 0.2);
+
+  /* ---- Transitions ---- */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 400ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-spring: 500ms cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* ---- Z-Index Scale ---- */
+  --z-base: 0;
+  --z-dropdown: 100;
+  --z-sticky: 200;
+  --z-modal: 300;
+  --z-popover: 400;
+  --z-tooltip: 500;
+  --z-toast: 600;
+
+  /* ---- Layout ---- */
+  --sidebar-width: 260px;
+  --sidebar-collapsed-width: 60px;
+  --topbar-height: 52px;
+  --statusbar-height: 28px;
+  --node-palette-width: 240px;
+}
+
+/* ============================================================
+ * Dark Theme (Default)
+ * ============================================================ */
+[data-theme="dark"],
+:root {
+  /* ---- Base Colors ---- */
+  --color-bg-primary: #0a0a0f;
+  --color-bg-secondary: #111118;
+  --color-bg-tertiary: #16161f;
+  --color-bg-elevated: #1c1c28;
+  --color-bg-hover: #22222f;
+  --color-bg-active: #282838;
+
+  /* ---- Surface Colors (Glassmorphism) ---- */
+  --color-surface: rgba(22, 22, 31, 0.8);
+  --color-surface-raised: rgba(28, 28, 40, 0.85);
+  --color-surface-overlay: rgba(10, 10, 15, 0.9);
+  --color-glass: rgba(255, 255, 255, 0.03);
+  --color-glass-border: rgba(255, 255, 255, 0.06);
+
+  /* ---- Text Colors ---- */
+  --color-text-primary: #f0f0f5;
+  --color-text-secondary: #a0a0b8;
+  --color-text-tertiary: #6b6b82;
+  --color-text-muted: #44445a;
+  --color-text-inverse: #0a0a0f;
+
+  /* ---- Border Colors ---- */
+  --color-border: rgba(255, 255, 255, 0.06);
+  --color-border-subtle: rgba(255, 255, 255, 0.04);
+  --color-border-strong: rgba(255, 255, 255, 0.12);
+  --color-border-focus: rgba(99, 102, 241, 0.5);
+
+  /* ---- Accent Colors — Indigo/Violet Palette ---- */
+  --color-accent: #6366f1;
+  --color-accent-light: #818cf8;
+  --color-accent-dark: #4f46e5;
+  --color-accent-subtle: rgba(99, 102, 241, 0.1);
+  --color-accent-hover: rgba(99, 102, 241, 0.15);
+
+  /* ---- Secondary Accent — Purple ---- */
+  --color-secondary: #8b5cf6;
+  --color-secondary-light: #a78bfa;
+  --color-secondary-dark: #7c3aed;
+
+  /* ---- Semantic Colors ---- */
+  --color-success: #22c55e;
+  --color-success-subtle: rgba(34, 197, 94, 0.1);
+  --color-warning: #f59e0b;
+  --color-warning-subtle: rgba(245, 158, 11, 0.1);
+  --color-error: #ef4444;
+  --color-error-subtle: rgba(239, 68, 68, 0.1);
+  --color-info: #3b82f6;
+  --color-info-subtle: rgba(59, 130, 246, 0.1);
+
+  /* ---- Node Category Colors ---- */
+  --color-node-frontend: #06b6d4;
+  --color-node-backend: #8b5cf6;
+  --color-node-database: #f59e0b;
+  --color-node-infra: #22c55e;
+  --color-node-ai: #ec4899;
+  --color-node-integration: #6366f1;
+  --color-node-custom: #a0a0b8;
+
+  /* ---- Gradient Presets ---- */
+  --gradient-accent: linear-gradient(135deg, #6366f1, #8b5cf6);
+  --gradient-surface: linear-gradient(180deg, rgba(22, 22, 31, 0.9), rgba(10, 10, 15, 0.95));
+  --gradient-glow: radial-gradient(ellipse at center, rgba(99, 102, 241, 0.08) 0%, transparent 70%);
+  --gradient-hero: linear-gradient(135deg, #0a0a0f 0%, #111128 50%, #0a0a0f 100%);
+  --gradient-shimmer: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.04) 50%,
+    transparent 100%
+  );
+}
+
+/* ============================================================
+ * Light Theme
+ * ============================================================ */
+[data-theme="light"] {
+  --color-bg-primary: #fafafa;
+  --color-bg-secondary: #f5f5f5;
+  --color-bg-tertiary: #eeeeee;
+  --color-bg-elevated: #ffffff;
+  --color-bg-hover: #e8e8f0;
+  --color-bg-active: #dddde8;
+
+  --color-surface: rgba(255, 255, 255, 0.9);
+  --color-surface-raised: rgba(255, 255, 255, 0.95);
+  --color-surface-overlay: rgba(250, 250, 250, 0.95);
+  --color-glass: rgba(0, 0, 0, 0.02);
+  --color-glass-border: rgba(0, 0, 0, 0.06);
+
+  --color-text-primary: #111118;
+  --color-text-secondary: #555566;
+  --color-text-tertiary: #888899;
+  --color-text-muted: #aaaabb;
+  --color-text-inverse: #f0f0f5;
+
+  --color-border: rgba(0, 0, 0, 0.08);
+  --color-border-subtle: rgba(0, 0, 0, 0.04);
+  --color-border-strong: rgba(0, 0, 0, 0.15);
+  --color-border-focus: rgba(99, 102, 241, 0.5);
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+}

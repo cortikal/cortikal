@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Cortikal.Core\Cortikal.Core.csproj" />
+    <ProjectReference Include="..\Cortikal.ArchParser\Cortikal.ArchParser.csproj" />
+    <ProjectReference Include="..\Cortikal.Orchestrator\Cortikal.Orchestrator.csproj" />
+    <ProjectReference Include="..\Cortikal.Security\Cortikal.Security.csproj" />
+    <ProjectReference Include="..\Cortikal.Infrastructure\Cortikal.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>
