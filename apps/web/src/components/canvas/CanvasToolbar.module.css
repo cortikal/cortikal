@@ -1,0 +1,93 @@
+/*
+ * ============================================================
+ * Cortikal — Canvas Toolbar Styles
+ * ============================================================
+ */
+
+.toolbar {
+  position: absolute;
+  bottom: var(--space-4);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  padding: var(--space-1) var(--space-3);
+  box-shadow: var(--shadow-lg);
+  backdrop-filter: blur(12px);
+}
+
+.group {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-md);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  transition: all var(--transition-fast);
+  font-family: var(--font-sans);
+}
+
+.btn:hover {
+  background: var(--color-glass);
+  color: var(--color-text-primary);
+}
+
+.btn:active {
+  transform: scale(0.92);
+}
+
+.btn.active {
+  background: var(--color-accent-subtle);
+  color: var(--color-accent-light);
+}
+
+.btn.danger:hover {
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.divider {
+  width: 1px;
+  height: 20px;
+  background: var(--color-border);
+  margin: 0 var(--space-1);
+}
+
+.stats {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 0 var(--space-2);
+}
+
+.stat {
+  font-size: 0.65rem;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
+.statValue {
+  font-weight: var(--weight-semibold);
+  color: var(--color-text-secondary);
+  font-family: var(--font-mono);
+}
+
+.statDot {
+  color: var(--color-text-muted);
+  font-size: var(--text-xs);
+}

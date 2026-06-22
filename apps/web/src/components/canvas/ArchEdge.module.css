@@ -1,0 +1,49 @@
+/*
+ * ============================================================
+ * Cortikal — ArchEdge Styles
+ * ============================================================
+ */
+
+.edge {
+  stroke-width: 2 !important;
+}
+
+.dataflow {
+  stroke: var(--color-border-strong) !important;
+}
+
+.dependency {
+  stroke: var(--color-text-muted) !important;
+  stroke-dasharray: 6 4 !important;
+}
+
+.edgeLabel {
+  position: absolute;
+  pointer-events: all;
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 2px 8px;
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: 0.6rem;
+  box-shadow: var(--shadow-sm);
+  white-space: nowrap;
+}
+
+.edgeLabel[data-selected="true"] {
+  border-color: var(--color-accent);
+}
+
+.edgeLabelType {
+  font-family: var(--font-mono);
+  color: var(--color-accent-light);
+  font-weight: var(--weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.edgeLabelText {
+  color: var(--color-text-secondary);
+}

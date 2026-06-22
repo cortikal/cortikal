@@ -1,0 +1,93 @@
+/*
+ * ============================================================
+ * Cortikal — Canvas Page Styles
+ * ============================================================
+ */
+
+.canvasContainer {
+  height: 100%;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+.reactFlow {
+  background: var(--color-bg-primary) !important;
+}
+
+/* ---- MiniMap ---- */
+.minimap {
+  background: var(--color-bg-elevated) !important;
+  border: 1px solid var(--color-border) !important;
+  border-radius: var(--radius-lg) !important;
+  box-shadow: var(--shadow-md) !important;
+}
+
+/* ---- Empty State ---- */
+.emptyState {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  pointer-events: none;
+  z-index: 5;
+  animation: fadeIn 400ms ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translate(-50%, -45%); }
+  to { opacity: 1; transform: translate(-50%, -50%); }
+}
+
+.emptyIcon {
+  font-size: 3rem;
+  margin-bottom: var(--space-3);
+  opacity: 0.5;
+}
+
+.emptyTitle {
+  font-size: var(--text-xl);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-2);
+}
+
+.emptyText {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  max-width: 300px;
+  line-height: var(--leading-relaxed);
+}
+
+.emptyText code {
+  font-family: var(--font-mono);
+  color: var(--color-accent-light);
+  background: var(--color-glass);
+  padding: 1px 5px;
+  border-radius: var(--radius-sm);
+  font-size: 0.85em;
+}
+
+/* ---- React Flow global overrides for dark theme ---- */
+:global(.react-flow__edge-path) {
+  stroke: var(--color-border-strong) !important;
+}
+
+:global(.react-flow__edge.selected .react-flow__edge-path) {
+  stroke: var(--color-accent) !important;
+}
+
+:global(.react-flow__connection-line) {
+  stroke: var(--color-accent) !important;
+  stroke-width: 2 !important;
+}
+
+:global(.react-flow__selection) {
+  background: rgba(99, 102, 241, 0.08) !important;
+  border: 1px solid var(--color-accent) !important;
+}
+
+:global(.react-flow__controls) {
+  display: none;
+}
