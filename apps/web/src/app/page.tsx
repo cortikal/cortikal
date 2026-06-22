@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 import AppShell from "../components/layout/AppShell";
 import styles from "./page.module.css";
 
@@ -63,7 +64,18 @@ const complexityColors: Record<string, string> = {
 };
 
 export default function SparkPage() {
+  const router = useRouter();
   const [prompt, setPrompt] = useState("");
+
+  const handleGenerate = () => {
+    if (prompt.trim()) {
+      router.push(`/canvas?prompt=${encodeURIComponent(prompt.trim())}`);
+    }
+  };
+
+  const handleTemplateClick = (id: string) => {
+    router.push(`/canvas?template=${id}`);
+  };
 
   return (
     <AppShell>
@@ -97,7 +109,7 @@ export default function SparkPage() {
                   onChange={(e) => setPrompt(e.target.value)}
                   onKeyDown={(e) => {
                     if (e.key === "Enter" && prompt.trim()) {
-                      // TODO: Navigate to canvas with prompt
+                      handleGenerate();
                     }
                   }}
                 />
@@ -105,6 +117,7 @@ export default function SparkPage() {
                   className={styles.promptButton}
                   id="spark-generate-btn"
                   disabled={!prompt.trim()}
+                  onClick={handleGenerate}
                 >
                   Generate
                   <span className={styles.promptButtonIcon}>→</span>
@@ -154,6 +167,7 @@ export default function SparkPage() {
                 key={template.id}
                 className={styles.templateCard}
                 id={`template-${template.id}`}
+                onClick={() => handleTemplateClick(template.id)}
                 style={{
                   animationDelay: `${index * 60}ms`,
                 }}

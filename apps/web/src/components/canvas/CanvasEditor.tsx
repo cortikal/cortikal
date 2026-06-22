@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useMemo, useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import {
   ReactFlow,
   ReactFlowProvider,
@@ -14,6 +15,8 @@ import ArchNodeComponent from "./ArchNode";
 import ArchEdgeComponent from "./ArchEdge";
 import NodePalette from "./NodePalette";
 import CanvasToolbar from "./CanvasToolbar";
+import { ApiClient } from "../../lib/api";
+import { archToReactFlow } from "../../utils/archConverter";
 import { useCanvasStore } from "../../stores/canvasStore";
 import styles from "./CanvasEditor.module.css";
 
@@ -31,6 +34,32 @@ function CanvasEditorInner() {
   const setSelectedNode = useCanvasStore((s) => s.setSelectedNode);
   const setSelectedEdge = useCanvasStore((s) => s.setSelectedEdge);
   const isMinimapVisible = useCanvasStore((s) => s.isMinimapVisible);
+  const loadGraph = useCanvasStore((s) => s.loadGraph);
+
+  const searchParams = useSearchParams();
+  const templateId = searchParams.get("template");
+  const promptQuery = searchParams.get("prompt");
+  const [isLoadingTemplate, setIsLoadingTemplate] = useState(!!templateId);
+
+  useEffect(() => {
+    if (templateId) {
+      setIsLoadingTemplate(true);
+      ApiClient.getTemplateContent(templateId)
+        .then((content) => ApiClient.parseArchMd(content))
+        .then((graph) => {
+          const { nodes: n, edges: e } = archToReactFlow(graph);
+          loadGraph(n, e);
+          setIsLoadingTemplate(false);
+        })
+        .catch((err) => {
+          console.error("Failed to load template:", err);
+          setIsLoadingTemplate(false);
+        });
+    } else if (promptQuery) {
+      // Future Phase: send prompt to LLM to generate architecture
+      console.log("Generating architecture for prompt:", promptQuery);
+    }
+  }, [templateId, promptQuery, loadGraph]);
 
   const handleNodeClick = useCallback(
     (_: React.MouseEvent, node: { id: string }) => {
@@ -115,7 +144,7 @@ function CanvasEditorInner() {
       <CanvasToolbar />
 
       {/* Empty state */}
-      {nodes.length === 0 && (
+      {nodes.length === 0 && !isLoadingTemplate && (
         <div className={styles.emptyState}>
           <div className={styles.emptyIcon}>🎨</div>
           <h3 className={styles.emptyTitle}>Start Building</h3>
@@ -123,6 +152,14 @@ function CanvasEditorInner() {
             Click a component from the palette to add it to the canvas,
             or load the demo architecture with the ⚡ button.
           </p>
+        </div>
+      )}
+      
+      {isLoadingTemplate && (
+        <div className={styles.emptyState}>
+          <div className={styles.emptyIcon}>⏳</div>
+          <h3 className={styles.emptyTitle}>Loading Template</h3>
+          <p className={styles.emptyText}>Parsing architecture...</p>
         </div>
       )}
     </div>
