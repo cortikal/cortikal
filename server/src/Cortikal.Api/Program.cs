@@ -39,7 +39,7 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
-app.UseHttpsRedirection();
+// app.UseHttpsRedirection(); // Disabled to prevent local HTTPS self-signed cert issues
 
 // Enable CORS
 app.UseCors("FrontendPolicy");
