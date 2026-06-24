@@ -25,7 +25,7 @@ public abstract class BaseAgent : IAgentService
         _logger.LogInformation("Agent {Role} is executing task: {Task}", Role, taskPrompt);
 
         // Add standard context: project details and architecture graph
-        var contextStr = $"Project: {project.Name}\nArchitecture: {architecture.Nodes.Count} nodes, {architecture.Edges?.Count ?? 0} edges.\n\nTask:\n{taskPrompt}";
+        var contextStr = $"Project: {project.Name}\nArchitecture: {architecture.Graph.Nodes.Count} nodes, {architecture.Graph.Edges?.Count ?? 0} edges.\n\nTask:\n{taskPrompt}";
 
         try
         {
