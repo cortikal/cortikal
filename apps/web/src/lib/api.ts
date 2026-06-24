@@ -17,6 +17,24 @@ export const ApiClient = {
     if (!res.ok) throw new Error("Failed to fetch template content");
     return res.text();
   },
+  // Mission Control
+  missionControl: {
+    getStats: async (projectId: string) => {
+      const res = await fetch(`${API_BASE}/missioncontrol/stats/${projectId}`);
+      if (!res.ok) throw new Error("Failed to fetch stats");
+      return res.json();
+    },
+    getPipelines: async (projectId: string) => {
+      const res = await fetch(`${API_BASE}/missioncontrol/pipelines/${projectId}`);
+      if (!res.ok) throw new Error("Failed to fetch pipelines");
+      return res.json();
+    },
+    queuePipeline: async (projectId: string, name: string) => {
+      const res = await fetch(`${API_BASE}/missioncontrol/pipelines/${projectId}?name=${encodeURIComponent(name)}`, { method: 'POST' });
+      if (!res.ok) throw new Error("Failed to queue pipeline");
+      return res.json();
+    }
+  },
   // Canvas
   parseArchMd: async (markdown: string) => {
     const res = await fetch(`${API_BASE}/canvas/parse`, {

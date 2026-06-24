@@ -15,6 +15,8 @@ builder.Services.AddOpenApi();
 // Register Cortikal Services
 builder.Services.AddSingleton<IArchParser, ArchMarkdownParser>();
 builder.Services.AddSingleton<IOrchestrator, Cortikal.Orchestrator.StateMachine.OrchestratorStateMachine>();
+builder.Services.AddSingleton<IBuildService, Cortikal.Orchestrator.Services.BuildService>();
+builder.Services.AddSingleton<IStatsService, Cortikal.Orchestrator.Services.StatsService>();
 builder.Services.AddHostedService<Cortikal.Api.Services.OrchestratorEventService>();
 
 // CORS policy for Next.js frontend
