@@ -13,7 +13,7 @@ export const ApiClient = {
     return res.json();
   },
   getTemplateContent: async (id: string) => {
-    const res = await fetch(`${API_BASE}/registry/templates/${id}`);
+    const res = await fetch(`${API_BASE}/registry/templates/${id}/content`);
     if (!res.ok) throw new Error("Failed to fetch template content");
     return res.text();
   },
