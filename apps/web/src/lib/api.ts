@@ -1,7 +1,7 @@
 import { HubConnectionBuilder, HubConnection, LogLevel } from "@microsoft/signalr";
 
-const API_BASE = "https://localhost:5001/api";
-const HUB_BASE = "https://localhost:5001/hubs";
+const API_BASE = "http://localhost:5176/api";
+const HUB_BASE = "http://localhost:5176/hubs";
 
 // --- REST API Client ---
 
