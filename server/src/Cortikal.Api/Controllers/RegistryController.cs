@@ -50,9 +50,15 @@ public class RegistryController : ControllerBase
         return Ok(templates);
     }
 
-    [HttpGet("templates/{id}")]
+    [HttpGet("templates/{id}/content")]
     public ActionResult<string> GetTemplateContent(string id)
     {
+        // Map frontend quick start template IDs to registry folder names
+        if (id == "web-app")
+        {
+            id = "web-app-basic";
+        }
+
         var archPath = Path.Combine(_registryPath, id, "arch.md");
         if (!System.IO.File.Exists(archPath))
         {

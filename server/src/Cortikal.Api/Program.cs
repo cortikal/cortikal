@@ -1,6 +1,10 @@
 using Cortikal.Api.Hubs;
+using Cortikal.Api.Services;
 using Cortikal.ArchParser;
 using Cortikal.Core.Interfaces;
+using Cortikal.Infrastructure.Generation;
+using Cortikal.Orchestrator.Services;
+using Cortikal.Orchestrator.StateMachine;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -14,17 +18,20 @@ builder.Services.AddOpenApi();
 
 // Register Cortikal Services
 builder.Services.AddSingleton<IArchParser, ArchMarkdownParser>();
-builder.Services.AddSingleton<IOrchestrator, Cortikal.Orchestrator.StateMachine.OrchestratorStateMachine>();
-builder.Services.AddSingleton<IBuildService, Cortikal.Orchestrator.Services.BuildService>();
-builder.Services.AddSingleton<IStatsService, Cortikal.Orchestrator.Services.StatsService>();
-builder.Services.AddHostedService<Cortikal.Api.Services.OrchestratorEventService>();
+builder.Services.AddSingleton<IOrchestrator, OrchestratorStateMachine>();
+builder.Services.AddSingleton<IBuildService, BuildService>();
+builder.Services.AddSingleton<IStatsService, StatsService>();
+builder.Services.AddHostedService<OrchestratorEventService>();
+
+// Architecture generator — uses a typed HttpClient for OpenAI calls
+builder.Services.AddHttpClient<IArchitectureGenerator, ArchitectureGeneratorService>();
 
 // CORS policy for Next.js frontend
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("FrontendPolicy", policy =>
     {
-        policy.WithOrigins("http://localhost:3000", "http://localhost:3005", "http://localhost:3100") // Next.js ports
+        policy.WithOrigins("http://localhost:3000", "http://localhost:3005", "http://localhost:3100")
               .AllowAnyHeader()
               .AllowAnyMethod()
               .AllowCredentials(); // Required for SignalR

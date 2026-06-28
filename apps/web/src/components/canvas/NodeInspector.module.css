@@ -1,0 +1,222 @@
+/*
+ * Cortikal — Node Inspector Panel
+ * Slides in from the right when a node is selected.
+ */
+
+.inspector {
+  position: absolute;
+  top: 60px;        /* below toolbar */
+  right: 12px;
+  width: 260px;
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  animation: slideIn 180ms ease-out;
+  overflow: hidden;
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(12px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* Header */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-glass);
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.icon {
+  font-size: 1.4rem;
+}
+
+.category {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-text-muted);
+  font-weight: var(--weight-semibold);
+}
+
+.nodeType {
+  font-size: var(--text-sm);
+  color: var(--color-accent-light);
+  font-family: var(--font-mono);
+  margin-top: 1px;
+}
+
+.closeBtn {
+  background: transparent;
+  border: none;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  font-size: 0.9rem;
+  padding: var(--space-1);
+  border-radius: var(--radius-sm);
+  transition: color 120ms, background 120ms;
+  line-height: 1;
+}
+.closeBtn:hover {
+  color: var(--color-text-primary);
+  background: var(--color-glass);
+}
+
+/* Sections */
+.section {
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.sectionLabel {
+  display: block;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-text-muted);
+  font-weight: var(--weight-semibold);
+  margin-bottom: var(--space-2);
+}
+
+/* Label input */
+.labelInput {
+  width: 100%;
+  background: var(--color-bg-primary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-text-primary);
+  font-size: var(--text-sm);
+  padding: var(--space-2) var(--space-3);
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 150ms;
+  font-family: inherit;
+}
+.labelInput:focus {
+  border-color: var(--color-accent);
+}
+
+/* ID badge */
+.idBadge {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  background: var(--color-bg-primary);
+  border-radius: var(--radius-sm);
+  padding: var(--space-1) var(--space-2);
+  word-break: break-all;
+}
+
+/* Position */
+.positionRow {
+  display: flex;
+  gap: var(--space-4);
+}
+
+.posItem {
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  font-family: var(--font-mono);
+}
+.posItem strong {
+  color: var(--color-text-primary);
+}
+
+/* Port list */
+.portList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.portItem {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-1) 0;
+}
+
+.portDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.portName {
+  flex: 1;
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.portType {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--color-text-muted);
+  background: var(--color-glass);
+  padding: 1px 5px;
+  border-radius: var(--radius-sm);
+}
+
+.required {
+  font-size: 0.6rem;
+  color: var(--color-warning);
+  background: rgba(251, 191, 36, 0.1);
+  padding: 1px 4px;
+  border-radius: var(--radius-sm);
+  font-weight: var(--weight-semibold);
+}
+
+/* Config pre */
+.configPre {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--color-text-secondary);
+  background: var(--color-bg-primary);
+  border-radius: var(--radius-sm);
+  padding: var(--space-2) var(--space-3);
+  overflow: auto;
+  max-height: 120px;
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+/* Footer */
+.footer {
+  padding: var(--space-3) var(--space-4);
+}
+
+.deleteBtn {
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: var(--radius-sm);
+  color: #ef4444;
+  font-size: var(--text-sm);
+  cursor: pointer;
+  transition: background 150ms, border-color 150ms;
+  font-family: inherit;
+}
+.deleteBtn:hover {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: rgba(239, 68, 68, 0.5);
+}
