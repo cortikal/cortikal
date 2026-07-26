@@ -18,6 +18,7 @@ builder.Services.AddOpenApi();
 
 // Register Cortikal Services
 builder.Services.AddSingleton<IArchParser, ArchMarkdownParser>();
+builder.Services.AddSingleton<IProjectRepository, Cortikal.Infrastructure.Data.ProjectRepository>();
 builder.Services.AddSingleton<IOrchestrator, OrchestratorStateMachine>();
 builder.Services.AddSingleton<IBuildService, BuildService>();
 builder.Services.AddSingleton<IStatsService, StatsService>();

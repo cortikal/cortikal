@@ -175,6 +175,11 @@ export const useCanvasStore = create<CanvasState>((set, get) => ({
 
     if (!sourceNode || !targetNode) return;
 
+    if (sourceNode.id === targetNode.id) {
+      set({ lastConnectionError: "Cannot connect a node to itself (no self-loops)" });
+      return;
+    }
+
     const sourcePort = sourceNode.data.outputs.find(
       (p) => p.id === connection.sourceHandle
     );

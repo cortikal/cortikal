@@ -109,6 +109,30 @@
   line-height: var(--leading-relaxed);
 }
 
+/* ---- Retry form & button ---- */
+.retryForm {
+  margin-top: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  pointer-events: all;
+}
+
+.promptInput {
+  background: var(--color-bg-primary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text-primary);
+  padding: var(--space-2) var(--space-3);
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  width: 250px;
+}
+.promptInput:focus {
+  outline: none;
+  border-color: var(--color-accent);
+}
+
 /* ---- Retry button ---- */
 .retryButton {
   margin-top: var(--space-4);

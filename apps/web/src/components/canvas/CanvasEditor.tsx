@@ -43,6 +43,7 @@ function CanvasEditorInner() {
   const templateId = searchParams.get("template");
   const promptQuery = searchParams.get("prompt");
 
+  const [currentPrompt, setCurrentPrompt] = useState(promptQuery || "");
   const [isLoadingTemplate, setIsLoadingTemplate] = useState(!!templateId);
   const [isGenerating, setIsGenerating] = useState(!!promptQuery);
   const [generationError, setGenerationError] = useState<string | null>(null);
@@ -216,9 +217,9 @@ function CanvasEditorInner() {
           <p className={styles.emptyText}>
             AI is designing your system&hellip;
           </p>
-          {promptQuery && (
+          {currentPrompt && (
             <p className={styles.generatingPrompt}>
-              &ldquo;{promptQuery}&rdquo;
+              &ldquo;{currentPrompt}&rdquo;
             </p>
           )}
         </div>
@@ -230,27 +231,38 @@ function CanvasEditorInner() {
           <div className={styles.emptyIcon}>⚠️</div>
           <h3 className={styles.emptyTitle}>Generation Failed</h3>
           <p className={styles.emptyText}>{generationError}</p>
-          <button
-            className={styles.retryButton}
-            onClick={() => {
-              if (!promptQuery) return;
-              setIsGenerating(true);
-              setGenerationError(null);
-              ApiClient.generateArchitecture(promptQuery)
-                .then((result) => {
-                  const graphData = result.document?.graph;
-                  if (!graphData) throw new Error("No graph data returned.");
-                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                  const graphAny = graphData as any;
-                  const { nodes: n, edges: e } = archToReactFlow(graphAny);
-                  loadGraph(n, e);
-                })
-                .catch((err: Error) => setGenerationError(err.message))
-                .finally(() => setIsGenerating(false));
-            }}
-          >
-            Retry
-          </button>
+          
+          <div className={styles.retryForm}>
+            <input 
+              type="text" 
+              className={styles.promptInput} 
+              value={currentPrompt}
+              onChange={(e) => setCurrentPrompt(e.target.value)}
+              placeholder="Refine your prompt..."
+            />
+            <button
+              className={styles.retryButton}
+              disabled={!currentPrompt.trim()}
+              onClick={() => {
+                if (!currentPrompt.trim()) return;
+                setIsGenerating(true);
+                setGenerationError(null);
+                ApiClient.generateArchitecture(currentPrompt.trim())
+                  .then((result) => {
+                    const graphData = result.document?.graph;
+                    if (!graphData) throw new Error("No graph data returned.");
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    const graphAny = graphData as any;
+                    const { nodes: n, edges: e } = archToReactFlow(graphAny);
+                    loadGraph(n, e);
+                  })
+                  .catch((err: Error) => setGenerationError(err.message))
+                  .finally(() => setIsGenerating(false));
+              }}
+            >
+              Retry
+            </button>
+          </div>
         </div>
       )}
 

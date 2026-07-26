@@ -9,6 +9,20 @@ import type { ArchDocument } from "@cortikal/shared-types";
 import type { ValidationResult, ValidationError, ValidationWarning } from "./types";
 
 /**
+ * Check if two data types are compatible.
+ */
+function arePortTypesCompatible(sourceType: string, targetType: string): boolean {
+  if (sourceType === targetType) return true;
+  
+  const jsonCompatible = new Set(["json", "rest", "graphql", "grpc", "http"]);
+  if (jsonCompatible.has(sourceType) && jsonCompatible.has(targetType)) {
+    return true;
+  }
+  
+  return false;
+}
+
+/**
  * Validate an ArchDocument for structural correctness.
  */
 export function validateArchDocument(doc: ArchDocument): ValidationResult {
@@ -83,7 +97,8 @@ export function validateArchDocument(doc: ArchDocument): ValidationResult {
     }
     edgeIds.add(edge.id);
 
-    if (!nodeIds.has(edge.sourceNodeId)) {
+    const sourceNode = doc.graph.nodes.find((n: any) => n.id === edge.sourceNodeId);
+    if (!sourceNode) {
       errors.push({
         path: `graph.edges.${edge.id}.sourceNodeId`,
         message: `Edge '${edge.id}' references non-existent source node '${edge.sourceNodeId}'`,
@@ -91,19 +106,70 @@ export function validateArchDocument(doc: ArchDocument): ValidationResult {
       });
     }
 
-    if (!nodeIds.has(edge.targetNodeId)) {
+    const targetNode = doc.graph.nodes.find((n: any) => n.id === edge.targetNodeId);
+    if (!targetNode) {
       errors.push({
         path: `graph.edges.${edge.id}.targetNodeId`,
         message: `Edge '${edge.id}' references non-existent target node '${edge.targetNodeId}'`,
         code: "INVALID_EDGE_TARGET",
       });
     }
+
+    if (edge.sourceNodeId === edge.targetNodeId) {
+      errors.push({
+        path: `graph.edges.${edge.id}`,
+        message: `Edge '${edge.id}' creates a self-loop on node '${edge.sourceNodeId}'`,
+        code: "SELF_LOOP",
+      });
+    }
+
+    if (sourceNode && targetNode) {
+      const sourcePort = sourceNode.outputs.find((p: any) => p.id === edge.sourcePortId);
+      if (!sourcePort) {
+        errors.push({
+          path: `graph.edges.${edge.id}.sourcePortId`,
+          message: `Edge '${edge.id}': Source port '${edge.sourcePortId}' does not exist on node '${edge.sourceNodeId}'.`,
+          code: "INVALID_EDGE_SOURCE_PORT",
+        });
+      } else if (sourcePort.direction !== "output") {
+        errors.push({
+          path: `graph.edges.${edge.id}.sourcePortId`,
+          message: `Edge '${edge.id}': Source port '${edge.sourcePortId}' must be an output port.`,
+          code: "INVALID_EDGE_SOURCE_DIRECTION",
+        });
+      }
+
+      const targetPort = targetNode.inputs.find((p: any) => p.id === edge.targetPortId);
+      if (!targetPort) {
+        errors.push({
+          path: `graph.edges.${edge.id}.targetPortId`,
+          message: `Edge '${edge.id}': Target port '${edge.targetPortId}' does not exist on node '${edge.targetNodeId}'.`,
+          code: "INVALID_EDGE_TARGET_PORT",
+        });
+      } else if (targetPort.direction !== "input") {
+        errors.push({
+          path: `graph.edges.${edge.id}.targetPortId`,
+          message: `Edge '${edge.id}': Target port '${edge.targetPortId}' must be an input port.`,
+          code: "INVALID_EDGE_TARGET_DIRECTION",
+        });
+      }
+
+      if (sourcePort && targetPort) {
+        if (!arePortTypesCompatible(sourcePort.dataType, targetPort.dataType)) {
+          errors.push({
+            path: `graph.edges.${edge.id}`,
+            message: `Edge '${edge.id}': Type mismatch between source '${sourcePort.dataType}' and target '${targetPort.dataType}'.`,
+            code: "TYPE_MISMATCH",
+          });
+        }
+      }
+    }
   }
 
   // Warn on orphan nodes (no edges)
   for (const node of doc.graph.nodes) {
     const hasEdge = doc.graph.edges.some(
-      (e) => e.sourceNodeId === node.id || e.targetNodeId === node.id
+      (e: any) => e.sourceNodeId === node.id || e.targetNodeId === node.id
     );
     if (!hasEdge && doc.graph.nodes.length > 1) {
       warnings.push({

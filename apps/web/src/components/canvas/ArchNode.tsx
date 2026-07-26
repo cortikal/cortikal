@@ -2,7 +2,7 @@
 
 import React, { memo } from "react";
 import { Handle, Position, type NodeProps } from "@xyflow/react";
-import type { ArchNode, NodeCategory } from "../../stores/canvasStore";
+import { useCanvasStore, type ArchNode, type NodeCategory } from "../../stores/canvasStore";
 import styles from "./ArchNode.module.css";
 
 const categoryIcons: Record<NodeCategory, string> = {
@@ -15,7 +15,16 @@ const categoryIcons: Record<NodeCategory, string> = {
   custom: "📦",
 };
 
-function ArchNodeComponent({ data, selected }: NodeProps<ArchNode>) {
+function ArchNodeComponent({ id, data, selected }: NodeProps<ArchNode>) {
+  const edges = useCanvasStore((s) => s.edges);
+
+  const isPortConnected = (portId: string, direction: "input" | "output") => {
+    if (direction === "input") {
+      return edges.some((e) => e.target === id && e.targetHandle === portId);
+    }
+    return edges.some((e) => e.source === id && e.sourceHandle === portId);
+  };
+
   return (
     <div
       className={`${styles.archNode} ${styles[data.category]}`}
@@ -54,24 +63,32 @@ function ArchNodeComponent({ data, selected }: NodeProps<ArchNode>) {
       <div className={styles.ports}>
         {data.inputs.length > 0 && (
           <div className={styles.portGroup}>
-            {data.inputs.map((port) => (
-              <div key={port.id} className={styles.portLabel} title={port.description}>
-                <span className={styles.portDot} data-direction="input" />
-                <span className={styles.portText}>{port.label}</span>
-                <span className={styles.portType}>{port.dataType}</span>
-              </div>
-            ))}
+            {data.inputs.map((port) => {
+              const connected = isPortConnected(port.id, "input");
+              const hasWarning = port.required && !connected;
+              return (
+                <div key={port.id} className={`${styles.portLabel} ${hasWarning ? styles.portWarning : ""}`} title={port.description}>
+                  <span className={styles.portDot} data-direction="input" />
+                  <span className={styles.portText}>{port.label}{port.required && "*"}</span>
+                  <span className={styles.portType}>{port.dataType}</span>
+                </div>
+              );
+            })}
           </div>
         )}
         {data.outputs.length > 0 && (
           <div className={`${styles.portGroup} ${styles.outputGroup}`}>
-            {data.outputs.map((port) => (
-              <div key={port.id} className={styles.portLabel} title={port.description}>
-                <span className={styles.portType}>{port.dataType}</span>
-                <span className={styles.portText}>{port.label}</span>
-                <span className={styles.portDot} data-direction="output" />
-              </div>
-            ))}
+            {data.outputs.map((port) => {
+              const connected = isPortConnected(port.id, "output");
+              const hasWarning = port.required && !connected;
+              return (
+                <div key={port.id} className={`${styles.portLabel} ${hasWarning ? styles.portWarning : ""}`} title={port.description}>
+                  <span className={styles.portType}>{port.dataType}</span>
+                  <span className={styles.portText}>{port.label}{port.required && "*"}</span>
+                  <span className={styles.portDot} data-direction="output" />
+                </div>
+              );
+            })}
           </div>
         )}
       </div>
