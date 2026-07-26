@@ -60,9 +60,34 @@ export const ApiClient = {
       success: boolean;
       document: { graph: { nodes: unknown[]; edges: unknown[] } } | null;
       errors: string[];
-    };
-  },
-  // Mission Control
+    },
+    // Swarm
+    swarm: {
+      start: async (projectId: string, archMdContent: string) => {
+        const res = await fetch(`${API_BASE}/swarm/start/${projectId}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ archMdContent }),
+        });
+        if (!res.ok) throw new Error("Failed to start swarm");
+        return res; // No JSON returned (Accepted status)
+      },
+      pause: async () => {
+        await fetch(`${API_BASE}/swarm/pause`, { method: "POST" });
+      },
+      resume: async () => {
+        await fetch(`${API_BASE}/swarm/resume`, { method: "POST" });
+      },
+      cancel: async () => {
+        await fetch(`${API_BASE}/swarm/cancel`, { method: "POST" });
+      },
+      getState: async () => {
+        const res = await fetch(`${API_BASE}/swarm/state`);
+        if (!res.ok) throw new Error("Failed to get state");
+        return res.json();
+      }
+    },
+    // Mission Control
   missionControl: {
     getStats: async (projectId: string) => {
       const res = await fetch(`${API_BASE}/missioncontrol/stats/${projectId}`);

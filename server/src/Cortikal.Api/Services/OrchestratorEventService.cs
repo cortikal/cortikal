@@ -12,22 +12,29 @@ public class OrchestratorEventService : IHostedService
 {
     private readonly IOrchestrator _orchestrator;
     private readonly IHubContext<OrchestratorHub> _orchestratorHub;
+    private readonly IHubContext<AgentHub> _agentHub;
 
-    public OrchestratorEventService(IOrchestrator orchestrator, IHubContext<OrchestratorHub> orchestratorHub)
+    public OrchestratorEventService(
+        IOrchestrator orchestrator, 
+        IHubContext<OrchestratorHub> orchestratorHub,
+        IHubContext<AgentHub> agentHub)
     {
         _orchestrator = orchestrator;
         _orchestratorHub = orchestratorHub;
+        _agentHub = agentHub;
     }
 
     public Task StartAsync(CancellationToken cancellationToken)
     {
         _orchestrator.StateChanged += OnStateChanged;
+        _orchestrator.AgentMessageReceived += OnAgentMessageReceived;
         return Task.CompletedTask;
     }
 
     public Task StopAsync(CancellationToken cancellationToken)
     {
         _orchestrator.StateChanged -= OnStateChanged;
+        _orchestrator.AgentMessageReceived -= OnAgentMessageReceived;
         return Task.CompletedTask;
     }
 
@@ -35,5 +42,11 @@ public class OrchestratorEventService : IHostedService
     {
         // Broadcast the state transition to all Mission Control / Swarm clients
         _orchestratorHub.Clients.All.SendAsync("ReceiveStateUpdate", e.NewState.ToString(), e.Message);
+    }
+
+    private void OnAgentMessageReceived(object? sender, Core.Models.AgentMessage e)
+    {
+        // Broadcast agent output directly to the Swarm UI
+        _agentHub.Clients.All.SendAsync("ReceiveAgentMessage", e);
     }
 }

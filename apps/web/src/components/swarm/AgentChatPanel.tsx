@@ -11,10 +11,11 @@ interface ChatMessage {
 }
 
 const roleColors: Record<string, string> = {
-  Architect: "var(--color-accent)",
+  LeadArchitect: "var(--color-accent)",
   FrontendDev: "var(--color-info)",
   BackendDev: "var(--color-success)",
-  QA: "var(--color-warning)",
+  QualityAssurance: "var(--color-warning)",
+  DevOps: "#9c27b0", // purple
   System: "var(--color-text-secondary)",
 };
 

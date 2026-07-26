@@ -15,6 +15,14 @@ public class GitPlugin
         _terminalPlugin = terminalPlugin;
     }
 
+    [KernelFunction, Description("Initializes a new Git repository in the specified directory.")]
+    public async Task<string> InitRepositoryAsync(
+        [Description("The working directory to initialize")] string repositoryPath)
+    {
+        _logger.LogInformation("Agent initializing git repo in {RepositoryPath}", repositoryPath);
+        return await _terminalPlugin.ExecuteCommandAsync("git init", repositoryPath);
+    }
+
     [KernelFunction, Description("Commits the current changes in the project repository using Git.")]
     public async Task<string> CommitChangesAsync(
         [Description("The working directory containing the Git repository")] string repositoryPath,

@@ -31,6 +31,11 @@ public interface IOrchestrator
     /// Event fired when state changes.
     /// </summary>
     event EventHandler<StateChangedEventArgs>? StateChanged;
+
+    /// <summary>
+    /// Event fired when an agent generates a message or code.
+    /// </summary>
+    event EventHandler<AgentMessage>? AgentMessageReceived;
 }
 
 public class StateChangedEventArgs : EventArgs
