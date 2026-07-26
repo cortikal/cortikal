@@ -29,7 +29,7 @@ Status below reflects a code-level audit as of 2026-07-26; re-verify against the
 - [x] QA and DevOps agent roles don't exist yet (see `agent-role-design` skill)
 - [x] `OrchestratorStateMachine` currently **simulates** phases with `Task.Delay` calls instead of invoking real agents — this is the core "does the swarm actually work" gap
 - [x] Actual code-writing pipeline: wire agent output through `FileSystemPlugin`/`GitPlugin` to produce real files/commits in a target project
-- [ ] Persist agent transcripts/history (currently only live-streamed, nothing durable)
+- [x] Persist agent transcripts/history (currently only live-streamed, nothing durable)
 
 ## Phase 4 — Mission Control
 

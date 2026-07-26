@@ -37,6 +37,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `CanvasToolbar` exports JSON and arch.md separately; import arch.md replaces manual drag-and-drop
 - `serializeArchMd` parameter type changed from `any` to `unknown` in `api.ts`
 
+### Phase 3 — The Swarm (Part 3)
+
+#### Added
+- `ITranscriptRepository` and `TranscriptRepository` for durable, file-based JSON persistence of agent chat history.
+- Wired transcript saving into `OrchestratorStateMachine` to record every agent message.
+- `GET /api/swarm/transcripts/{projectId}` endpoint to fetch agent transcripts.
+- Swarm UI now fetches and loads persisted transcripts on page load.
+
 ### Phase 3 — The Swarm (Part 2)
 
 #### Added
