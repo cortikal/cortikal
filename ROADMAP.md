@@ -25,8 +25,8 @@ Status below reflects a code-level audit as of 2026-07-26; re-verify against the
 - [x] UI scaffolding: `AgentChatPanel`, `CodePreviewPanel`, `FileTreePanel`, `/swarm` page
 - [x] SignalR wiring: `OrchestratorHub`/`AgentHub` on the backend, `orchestratorHub`/`agentHub` clients on the frontend
 - [x] `BaseAgent` abstraction + `ArchitectAgent` implemented
-- [ ] `FrontendDevAgent`/`BackendDevAgent` are stubs — need real prompts/behavior
-- [ ] QA and DevOps agent roles don't exist yet (see `agent-role-design` skill)
+- [x] `FrontendDevAgent`/`BackendDevAgent` are stubs — need real prompts/behavior
+- [x] QA and DevOps agent roles don't exist yet (see `agent-role-design` skill)
 - [ ] `OrchestratorStateMachine` currently **simulates** phases with `Task.Delay` calls instead of invoking real agents — this is the core "does the swarm actually work" gap
 - [ ] Actual code-writing pipeline: wire agent output through `FileSystemPlugin`/`GitPlugin` to produce real files/commits in a target project
 - [ ] Persist agent transcripts/history (currently only live-streamed, nothing durable)

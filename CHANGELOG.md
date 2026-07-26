@@ -37,6 +37,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `CanvasToolbar` exports JSON and arch.md separately; import arch.md replaces manual drag-and-drop
 - `serializeArchMd` parameter type changed from `any` to `unknown` in `api.ts`
 
+### Phase 3 — The Swarm (Part 1)
+
+#### Added
+- `QAEngineerAgent` and `DevOpsEngineerAgent` for the orchestrator swarm
+- `LlmRouter` to support role-based multi-LLM configuration (OpenAI, Gemini, Claude)
+- Custom `ClaudeChatCompletionService` using raw `HttpClient`
+- Multi-LLM API key settings in `appsettings.json`
+
+#### Changed
+- Converted `FrontendDevAgent` and `BackendDevAgent` from stubs to real agents with structured JSON prompts
+- Refactored `ArchitectAgent` and `BaseAgent` to use `ILlmRouter`
+
 ---
 
 ### Added
