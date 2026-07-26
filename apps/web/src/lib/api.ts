@@ -60,9 +60,10 @@ export const ApiClient = {
       success: boolean;
       document: { graph: { nodes: unknown[]; edges: unknown[] } } | null;
       errors: string[];
-    },
-    // Swarm
-    swarm: {
+    };
+  },
+  // Swarm
+  swarm: {
       start: async (projectId: string, archMdContent: string) => {
         const res = await fetch(`${API_BASE}/swarm/start/${projectId}`, {
           method: "POST",
