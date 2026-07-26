@@ -1,11 +1,12 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import AppShell from "../../components/layout/AppShell";
 import AgentChatPanel from "../../components/swarm/AgentChatPanel";
 import FileTreePanel from "../../components/swarm/FileTreePanel";
 import CodePreviewPanel from "../../components/swarm/CodePreviewPanel";
-import { agentHub } from "../../lib/api";
+import { agentHub, ApiClient } from "../../lib/api";
 
 export interface SwarmFile {
   name: string;
@@ -13,8 +14,36 @@ export interface SwarmFile {
 }
 
 export default function SwarmPage() {
+  return (
+    <Suspense fallback={<AppShell><div>Loading...</div></AppShell>}>
+      <SwarmContent />
+    </Suspense>
+  );
+}
+
+function SwarmContent() {
+  const searchParams = useSearchParams();
+  const projectId = searchParams.get("projectId") || "default-project";
+
   const [files, setFiles] = useState<SwarmFile[]>([]);
   const [selectedFile, setSelectedFile] = useState<SwarmFile | null>(null);
+  const [initialMessages, setInitialMessages] = useState<any[]>([]);
+
+  useEffect(() => {
+    // Load existing transcript
+    ApiClient.swarm.getTranscript(projectId).then(msgs => {
+      setInitialMessages(msgs);
+      const allFiles = new Map<string, string>();
+      msgs.forEach((m: any) => {
+        if (m.generatedFiles) {
+          m.generatedFiles.forEach((gf: any) => {
+            allFiles.set(gf.filePath, gf.content);
+          });
+        }
+      });
+      setFiles(Array.from(allFiles.entries()).map(([name, content]) => ({ name, content })));
+    }).catch(console.error);
+  }, [projectId]);
 
   useEffect(() => {
     const onAgentMessage = (msg: any) => {
@@ -44,7 +73,7 @@ export default function SwarmPage() {
         
         {/* Left Panel: Swarm Chat */}
         <div style={{ width: "350px", flexShrink: 0 }}>
-          <AgentChatPanel />
+          <AgentChatPanel initialMessages={initialMessages} />
         </div>
 
         {/* Middle Panel: File Tree */}

@@ -19,9 +19,25 @@ const roleColors: Record<string, string> = {
   System: "var(--color-text-secondary)",
 };
 
-export default function AgentChatPanel() {
+interface AgentChatPanelProps {
+  initialMessages?: any[];
+}
+
+export default function AgentChatPanel({ initialMessages = [] }: AgentChatPanelProps) {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [orchestratorState, setOrchestratorState] = useState<string>("Idle");
+
+  useEffect(() => {
+    if (initialMessages && initialMessages.length > 0) {
+      const formatted = initialMessages.map(m => ({
+        id: m.id || Date.now().toString() + Math.random().toString(),
+        role: m.agentRole || "System",
+        content: m.content || JSON.stringify(m),
+        timestamp: m.timestamp || new Date().toISOString()
+      }));
+      setMessages(formatted);
+    }
+  }, [initialMessages]);
 
   useEffect(() => {
     // Connect to hubs

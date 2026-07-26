@@ -13,6 +13,7 @@ public class OrchestratorStateMachine : IOrchestrator
     private readonly IEnumerable<IAgentService> _agents;
     private readonly FileSystemPlugin _fileSystem;
     private readonly GitPlugin _git;
+    private readonly ITranscriptRepository _transcriptRepo;
     private ExecutionState _currentState = ExecutionState.Idle;
     
     public ExecutionState CurrentState => _currentState;
@@ -23,12 +24,14 @@ public class OrchestratorStateMachine : IOrchestrator
         ILogger<OrchestratorStateMachine> logger,
         IEnumerable<IAgentService> agents,
         FileSystemPlugin fileSystem,
-        GitPlugin git)
+        GitPlugin git,
+        ITranscriptRepository transcriptRepo)
     {
         _logger = logger;
         _agents = agents;
         _fileSystem = fileSystem;
         _git = git;
+        _transcriptRepo = transcriptRepo;
     }
 
     public async Task StartAsync(Project project, ArchDocument architecture)
@@ -182,6 +185,7 @@ public class OrchestratorStateMachine : IOrchestrator
             GeneratedFiles = messageType == MessageType.Code || messageType == MessageType.Infrastructure ? ExtractFilesFromJson(output) : null
         };
         
+        _transcriptRepo.AddMessage(project.Id, message);
         AgentMessageReceived?.Invoke(this, message);
         return output;
     }

@@ -85,6 +85,11 @@ export const ApiClient = {
         const res = await fetch(`${API_BASE}/swarm/state`);
         if (!res.ok) throw new Error("Failed to get state");
         return res.json();
+      },
+      getTranscript: async (projectId: string) => {
+        const res = await fetch(`${API_BASE}/swarm/transcripts/${projectId}`);
+        if (!res.ok) throw new Error("Failed to fetch transcript");
+        return res.json();
       }
     },
     // Mission Control

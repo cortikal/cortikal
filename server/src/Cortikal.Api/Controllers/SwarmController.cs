@@ -11,12 +11,14 @@ public class SwarmController : ControllerBase
     private readonly IOrchestrator _orchestrator;
     private readonly IProjectRepository _projectRepository;
     private readonly IArchParser _archParser;
+    private readonly ITranscriptRepository _transcriptRepository;
 
-    public SwarmController(IOrchestrator orchestrator, IProjectRepository projectRepository, IArchParser archParser)
+    public SwarmController(IOrchestrator orchestrator, IProjectRepository projectRepository, IArchParser archParser, ITranscriptRepository transcriptRepository)
     {
         _orchestrator = orchestrator;
         _projectRepository = projectRepository;
         _archParser = archParser;
+        _transcriptRepository = transcriptRepository;
     }
 
     [HttpPost("start/{projectId}")]
@@ -67,6 +69,13 @@ public class SwarmController : ControllerBase
     public IActionResult GetState()
     {
         return Ok(new { State = _orchestrator.CurrentState.ToString() });
+    }
+
+    [HttpGet("transcripts/{projectId}")]
+    public IActionResult GetTranscript(string projectId)
+    {
+        var transcript = _transcriptRepository.GetTranscript(projectId);
+        return Ok(transcript);
     }
 }
 
