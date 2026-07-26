@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback, useMemo, useEffect, useState } from "react";
+import React, { useCallback, useMemo, useEffect, useState, useRef } from "react";
 import { useSearchParams } from "next/navigation";
 import {
   ReactFlow,
@@ -37,6 +37,7 @@ function CanvasEditorInner() {
   const isMinimapVisible = useCanvasStore((s) => s.isMinimapVisible);
   const loadGraph = useCanvasStore((s) => s.loadGraph);
   const selectedNodeId = useCanvasStore((s) => s.selectedNodeId);
+  const lastConnectionError = useCanvasStore((s) => s.lastConnectionError);
 
   const searchParams = useSearchParams();
   const templateId = searchParams.get("template");
@@ -45,16 +46,32 @@ function CanvasEditorInner() {
   const [isLoadingTemplate, setIsLoadingTemplate] = useState(!!templateId);
   const [isGenerating, setIsGenerating] = useState(!!promptQuery);
   const [generationError, setGenerationError] = useState<string | null>(null);
+  const [connectionToast, setConnectionToast] = useState<string | null>(null);
+
+  // --- Strict Mode guards (React 18 double-mount protection) ---
+  const hasLoadedTemplateRef = useRef(false);
+  const hasGeneratedRef = useRef(false);
+
+  // Show connection error toast
+  useEffect(() => {
+    if (lastConnectionError) {
+      setConnectionToast(lastConnectionError);
+      const timer = setTimeout(() => setConnectionToast(null), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [lastConnectionError]);
 
   // Load template
   useEffect(() => {
-    if (!templateId) return;
+    if (!templateId || hasLoadedTemplateRef.current) return;
+    hasLoadedTemplateRef.current = true;
+
     ApiClient.getTemplateContent(templateId)
       .then((content) => ApiClient.parseArchMd(content))
       .then((result) => {
         const graphData = result.document?.graph || result.graph || result;
         const { nodes: n, edges: e } = archToReactFlow(graphData);
-        loadGraph(n, e);
+        loadGraph(n, e, result.document?.metadata ?? null);
       })
       .catch((err) => {
         console.error("Failed to load template:", err);
@@ -62,10 +79,14 @@ function CanvasEditorInner() {
       .finally(() => setIsLoadingTemplate(false));
   }, [templateId, loadGraph]);
 
-  // Generate from prompt
+  // Generate from prompt — with AbortController for cancellation
   useEffect(() => {
-    if (!promptQuery) return;
-    ApiClient.generateArchitecture(promptQuery)
+    if (!promptQuery || hasGeneratedRef.current) return;
+    hasGeneratedRef.current = true;
+
+    const abortController = new AbortController();
+
+    ApiClient.generateArchitecture(promptQuery, abortController.signal)
       .then((result) => {
         const graphData = result.document?.graph;
         if (!graphData)
@@ -75,9 +96,13 @@ function CanvasEditorInner() {
         loadGraph(n, e);
       })
       .catch((err: Error) => {
-        setGenerationError(err.message);
+        if (err.name !== "AbortError") {
+          setGenerationError(err.message);
+        }
       })
       .finally(() => setIsGenerating(false));
+
+    return () => abortController.abort();
   }, [promptQuery, loadGraph]);
 
   const handleNodeClick = useCallback(
@@ -226,6 +251,13 @@ function CanvasEditorInner() {
           >
             Retry
           </button>
+        </div>
+      )}
+
+      {/* Connection type-mismatch toast */}
+      {connectionToast && (
+        <div className={styles.connectionToast} role="alert">
+          ⚠️ {connectionToast}
         </div>
       )}
     </div>

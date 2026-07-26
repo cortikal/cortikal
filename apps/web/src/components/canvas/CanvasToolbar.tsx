@@ -21,6 +21,7 @@ export default function CanvasToolbar() {
   const loadGraph = useCanvasStore((s) => s.loadGraph);
   const nodes = useCanvasStore((s) => s.nodes);
   const edges = useCanvasStore((s) => s.edges);
+  const metadata = useCanvasStore((s) => s.metadata);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -42,7 +43,7 @@ export default function CanvasToolbar() {
     try {
       const graph = reactFlowToArch(nodes, edges);
       const archDocument = {
-        metadata: {
+        metadata: metadata ?? {
           name: "My Architecture",
           author: "cortikal",
           version: "0.1.0",
@@ -54,6 +55,11 @@ export default function CanvasToolbar() {
         },
         graph,
         description: null,
+      };
+      // Update the timestamp on save
+      archDocument.metadata = {
+        ...archDocument.metadata,
+        updatedAt: new Date().toISOString(),
       };
       const markdown = await ApiClient.serializeArchMd(archDocument);
       const blob = new Blob([markdown], { type: "text/markdown" });
@@ -80,7 +86,9 @@ export default function CanvasToolbar() {
         const result = await ApiClient.parseArchMd(content);
         const graphData = result.document?.graph || result.graph || result;
         const { nodes: n, edges: ed } = archToReactFlow(graphData);
-        loadGraph(n, ed);
+        // Preserve metadata from the imported file
+        const importedMetadata = result.document?.metadata ?? null;
+        loadGraph(n, ed, importedMetadata);
       } catch (err) {
         console.error("Failed to import arch.md:", err);
         alert("Failed to parse the selected arch.md file.");

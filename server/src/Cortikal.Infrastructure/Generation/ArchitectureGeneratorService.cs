@@ -179,18 +179,21 @@ public class ArchitectureGeneratorService : IArchitectureGenerator
         }
     }
 
+    /// <summary>
+    /// Strip markdown code fences from the model output, preserving content.
+    /// Removes only lines that are purely fence markers (e.g. ```yaml, ```arch, ```).
+    /// </summary>
     private static string StripMarkdownFences(string content)
     {
         var lines = content.Split('\n');
-        var filtered = new List<string>();
-        bool inFence = false;
+        var filtered = new List<string>(lines.Length);
 
         foreach (var line in lines)
         {
             var trimmed = line.Trim();
-            if (trimmed.StartsWith("```"))
+            // Skip lines that are *only* a fence marker (optionally with a language tag)
+            if (trimmed.StartsWith("```") && trimmed.TrimStart('`').TrimEnd() is "" or "yaml" or "yml" or "arch" or "json")
             {
-                inFence = !inFence;
                 continue;
             }
             filtered.Add(line);

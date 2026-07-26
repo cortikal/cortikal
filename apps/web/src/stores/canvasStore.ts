@@ -53,6 +53,41 @@ export interface ArchEdgeData extends Record<string, unknown> {
 
 export type ArchEdge = Edge<ArchEdgeData>;
 
+export interface ArchMetadata {
+  name: string;
+  author: string;
+  version: string;
+  tags: string[];
+  complexity: string;
+  description: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+// ============================================================
+// Helpers
+// ============================================================
+
+/** UUID-based ID generation — collision-safe with imported IDs */
+const generateNodeId = () => `node-${crypto.randomUUID().slice(0, 8)}`;
+const generateEdgeId = () => `edge-${crypto.randomUUID().slice(0, 8)}`;
+
+/**
+ * Port data-type compatibility check.
+ * Mirrors the C# ArchValidator.AreTypesCompatible logic.
+ */
+const JSON_COMPATIBLE = new Set(["json", "object", "array", "string"]);
+
+function arePortTypesCompatible(
+  sourceType: string,
+  targetType: string
+): boolean {
+  if (sourceType === targetType) return true;
+  if (JSON_COMPATIBLE.has(sourceType) && JSON_COMPATIBLE.has(targetType))
+    return true;
+  return false;
+}
+
 // ============================================================
 // Store
 // ============================================================
@@ -62,6 +97,9 @@ interface CanvasState {
   nodes: ArchNode[];
   edges: ArchEdge[];
 
+  // Document metadata (preserved across import/export)
+  metadata: ArchMetadata | null;
+
   // Selection
   selectedNodeId: string | null;
   selectedEdgeId: string | null;
@@ -69,6 +107,9 @@ interface CanvasState {
   // UI State
   isPaletteOpen: boolean;
   isMinimapVisible: boolean;
+
+  // Connection error feedback
+  lastConnectionError: string | null;
 
   // React Flow callbacks
   onNodesChange: OnNodesChange<ArchNode>;
@@ -99,23 +140,23 @@ interface CanvasState {
   toggleMinimap: () => void;
 
   // Import/Export
-  loadGraph: (nodes: ArchNode[], edges: ArchEdge[]) => void;
+  loadGraph: (
+    nodes: ArchNode[],
+    edges: ArchEdge[],
+    metadata?: ArchMetadata | null
+  ) => void;
   clearGraph: () => void;
 }
-
-let nodeIdCounter = 0;
-let edgeIdCounter = 0;
-
-const generateNodeId = () => `node-${++nodeIdCounter}`;
-const generateEdgeId = () => `edge-${++edgeIdCounter}`;
 
 export const useCanvasStore = create<CanvasState>((set, get) => ({
   nodes: [],
   edges: [],
+  metadata: null,
   selectedNodeId: null,
   selectedEdgeId: null,
   isPaletteOpen: true,
   isMinimapVisible: true,
+  lastConnectionError: null,
 
   onNodesChange: (changes) => {
     set({ nodes: applyNodeChanges(changes, get().nodes) });
@@ -126,17 +167,45 @@ export const useCanvasStore = create<CanvasState>((set, get) => ({
   },
 
   onConnect: (connection: Connection) => {
+    const { nodes } = get();
+
+    // Look up the source and target nodes/ports
+    const sourceNode = nodes.find((n) => n.id === connection.source);
+    const targetNode = nodes.find((n) => n.id === connection.target);
+
+    if (!sourceNode || !targetNode) return;
+
+    const sourcePort = sourceNode.data.outputs.find(
+      (p) => p.id === connection.sourceHandle
+    );
+    const targetPort = targetNode.data.inputs.find(
+      (p) => p.id === connection.targetHandle
+    );
+
+    // Determine data types — fall back to "json" if ports aren't found
+    const sourceType = sourcePort?.dataType ?? "json";
+    const targetType = targetPort?.dataType ?? "json";
+
+    // Enforce type compatibility
+    if (sourcePort && targetPort && !arePortTypesCompatible(sourceType, targetType)) {
+      set({
+        lastConnectionError:
+          `Type mismatch: ${sourcePort.id} (${sourceType}) → ${targetPort.id} (${targetType})`,
+      });
+      return; // Reject the connection
+    }
+
     const newEdge: ArchEdge = {
       ...connection,
       id: generateEdgeId(),
       type: "archEdge",
       animated: true,
       data: {
-        dataType: "json",
+        dataType: sourceType,
         edgeType: "dataflow",
       },
     };
-    set({ edges: addEdge(newEdge, get().edges) });
+    set({ edges: addEdge(newEdge, get().edges), lastConnectionError: null });
   },
 
   addNode: (type, category, label, position, inputs = [], outputs = []) => {
@@ -196,16 +265,24 @@ export const useCanvasStore = create<CanvasState>((set, get) => ({
   toggleMinimap: () =>
     set({ isMinimapVisible: !get().isMinimapVisible }),
 
-  loadGraph: (nodes, edges) => {
-    // Reset counters
-    nodeIdCounter = nodes.length;
-    edgeIdCounter = edges.length;
-    set({ nodes, edges, selectedNodeId: null, selectedEdgeId: null });
+  loadGraph: (nodes, edges, metadata = null) => {
+    set({
+      nodes,
+      edges,
+      metadata: metadata ?? get().metadata,
+      selectedNodeId: null,
+      selectedEdgeId: null,
+    });
   },
 
   clearGraph: () => {
-    nodeIdCounter = 0;
-    edgeIdCounter = 0;
-    set({ nodes: [], edges: [], selectedNodeId: null, selectedEdgeId: null });
+    set({
+      nodes: [],
+      edges: [],
+      metadata: null,
+      selectedNodeId: null,
+      selectedEdgeId: null,
+    });
   },
 }));
+

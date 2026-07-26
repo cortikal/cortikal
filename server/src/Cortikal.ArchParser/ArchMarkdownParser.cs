@@ -112,6 +112,12 @@ public partial class ArchMarkdownParser : IArchParser
             Description = description
         };
 
+        // 5. Semantic validation — checks duplicate IDs, dangling edge refs,
+        //    self-loops, I/O type compatibility, required-port warnings, etc.
+        var validation = Validation.ArchValidator.Validate(document);
+        errors.AddRange(validation.Errors);
+        warnings.AddRange(validation.Warnings);
+
         return new ArchParseResult
         {
             Success = errors.Count == 0,

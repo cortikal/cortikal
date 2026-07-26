@@ -26,12 +26,15 @@ builder.Services.AddHostedService<OrchestratorEventService>();
 // Architecture generator — uses a typed HttpClient for OpenAI calls
 builder.Services.AddHttpClient<IArchitectureGenerator, ArchitectureGeneratorService>();
 
-// CORS policy for Next.js frontend
+// CORS policy for Next.js frontend — origins configurable via Cortikal:Frontend:Origins
+var corsOrigins = builder.Configuration.GetSection("Cortikal:Frontend:Origins").Get<string[]>()
+    ?? ["http://localhost:3000", "http://localhost:3005", "http://localhost:3100"];
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("FrontendPolicy", policy =>
     {
-        policy.WithOrigins("http://localhost:3000", "http://localhost:3005", "http://localhost:3100")
+        policy.WithOrigins(corsOrigins)
               .AllowAnyHeader()
               .AllowAnyMethod()
               .AllowCredentials(); // Required for SignalR

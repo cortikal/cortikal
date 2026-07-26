@@ -10,11 +10,17 @@ public class RegistryController : ControllerBase
 
     public RegistryController(IConfiguration configuration)
     {
-        // For development, navigate from server/src/Cortikal.Api to registry/templates
-        var basePath = AppContext.BaseDirectory;
-        
-        // This is a bit hacky for dev. In prod it would be configured.
-        _registryPath = Path.GetFullPath(Path.Combine(basePath, "..", "..", "..", "..", "..", "..", "registry", "templates"));
+        // Prefer explicit config; fall back to the relative dev path
+        var configured = configuration["Cortikal:Registry:TemplatePath"];
+        if (!string.IsNullOrWhiteSpace(configured))
+        {
+            _registryPath = Path.GetFullPath(configured);
+        }
+        else
+        {
+            var basePath = AppContext.BaseDirectory;
+            _registryPath = Path.GetFullPath(Path.Combine(basePath, "..", "..", "..", "..", "..", "..", "registry", "templates"));
+        }
     }
 
     [HttpGet("templates")]
@@ -59,7 +65,22 @@ public class RegistryController : ControllerBase
             id = "web-app-basic";
         }
 
-        var archPath = Path.Combine(_registryPath, id, "arch.md");
+        // --- Path-traversal protection ---
+        // Reject any id containing path separators or traversal sequences
+        if (id.Contains("..") || id.Contains('/') || id.Contains('\\') ||
+            id.IndexOfAny(Path.GetInvalidFileNameChars()) >= 0)
+        {
+            return BadRequest("Invalid template ID.");
+        }
+
+        var archPath = Path.GetFullPath(Path.Combine(_registryPath, id, "arch.md"));
+
+        // Belt-and-suspenders: ensure resolved path is inside the registry root
+        if (!archPath.StartsWith(_registryPath, StringComparison.OrdinalIgnoreCase))
+        {
+            return BadRequest("Invalid template ID.");
+        }
+
         if (!System.IO.File.Exists(archPath))
         {
             return NotFound($"Template {id} not found.");

@@ -4,8 +4,10 @@ import {
   LogLevel,
 } from "@microsoft/signalr";
 
-const API_BASE = "http://localhost:5050/api";
-const HUB_BASE = "http://localhost:5050/hubs";
+const API_BASE =
+  process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5050/api";
+const HUB_BASE =
+  process.env.NEXT_PUBLIC_HUB_URL ?? "http://localhost:5050/hubs";
 
 // --- REST API Client ---
 
@@ -40,11 +42,12 @@ export const ApiClient = {
     if (!res.ok) throw new Error("Failed to serialize graph");
     return res.text();
   },
-  generateArchitecture: async (prompt: string) => {
+  generateArchitecture: async (prompt: string, signal?: AbortSignal) => {
     const res = await fetch(`${API_BASE}/canvas/generate`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ prompt }),
+      signal,
     });
     const data = await res.json();
     if (!res.ok) {
