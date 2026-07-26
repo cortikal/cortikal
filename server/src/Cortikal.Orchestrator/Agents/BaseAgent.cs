@@ -8,15 +8,15 @@ namespace Cortikal.Orchestrator.Agents;
 
 public abstract class BaseAgent : IAgentService
 {
-    protected readonly Kernel _kernel;
+    protected readonly ILlmRouter _llmRouter;
     protected readonly ILogger _logger;
     
     public abstract AgentRole Role { get; }
     protected abstract string SystemPrompt { get; }
 
-    protected BaseAgent(Kernel kernel, ILogger logger)
+    protected BaseAgent(ILlmRouter llmRouter, ILogger logger)
     {
-        _kernel = kernel;
+        _llmRouter = llmRouter;
         _logger = logger;
     }
 
@@ -29,7 +29,8 @@ public abstract class BaseAgent : IAgentService
 
         try
         {
-            var result = await _kernel.InvokePromptAsync(SystemPrompt + "\n\n" + contextStr);
+            var kernel = _llmRouter.GetKernelForTask(Role.ToString());
+            var result = await kernel.InvokePromptAsync(SystemPrompt + "\n\n" + contextStr);
             return result.GetValue<string>() ?? string.Empty;
         }
         catch (Exception ex)

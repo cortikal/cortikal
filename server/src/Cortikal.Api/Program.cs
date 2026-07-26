@@ -3,6 +3,8 @@ using Cortikal.Api.Services;
 using Cortikal.ArchParser;
 using Cortikal.Core.Interfaces;
 using Cortikal.Infrastructure.Generation;
+using Cortikal.Orchestrator.Agents;
+using Cortikal.Orchestrator.Plugins;
 using Cortikal.Orchestrator.Services;
 using Cortikal.Orchestrator.StateMachine;
 using Microsoft.AspNetCore.Builder;
@@ -23,6 +25,21 @@ builder.Services.AddSingleton<IOrchestrator, OrchestratorStateMachine>();
 builder.Services.AddSingleton<IBuildService, BuildService>();
 builder.Services.AddSingleton<IStatsService, StatsService>();
 builder.Services.AddHostedService<OrchestratorEventService>();
+
+// Register Plugins
+builder.Services.AddSingleton<FileSystemPlugin>();
+builder.Services.AddSingleton<GitPlugin>();
+builder.Services.AddSingleton<TerminalPlugin>();
+
+// Register LLM Router
+builder.Services.AddSingleton<ILlmRouter, LlmRouter>();
+
+// Register Agents
+builder.Services.AddSingleton<IAgentService, ArchitectAgent>();
+builder.Services.AddSingleton<IAgentService, FrontendDevAgent>();
+builder.Services.AddSingleton<IAgentService, BackendDevAgent>();
+builder.Services.AddSingleton<IAgentService, QAEngineerAgent>();
+builder.Services.AddSingleton<IAgentService, DevOpsEngineerAgent>();
 
 // Architecture generator — uses a typed HttpClient for OpenAI calls
 builder.Services.AddHttpClient<IArchitectureGenerator, ArchitectureGeneratorService>();
