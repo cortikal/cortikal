@@ -37,6 +37,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `CanvasToolbar` exports JSON and arch.md separately; import arch.md replaces manual drag-and-drop
 - `serializeArchMd` parameter type changed from `any` to `unknown` in `api.ts`
 
+### Phase 3 — The Swarm (Part 2)
+
+#### Added
+- `SwarmController` to handle starting, pausing, and cancelling the agent swarm.
+- Wired real agent invocations into `OrchestratorStateMachine` replacing the simulation delays.
+- Integrated `FileSystemPlugin` and `GitPlugin` into the orchestrator pipeline for automated file and repository generation.
+- Swarm UI components (`AgentChatPanel`, `FileTreePanel`, `CodePreviewPanel`) now receive and display live agent outputs via SignalR.
+
 ### Phase 3 — The Swarm (Part 1)
 
 #### Added
