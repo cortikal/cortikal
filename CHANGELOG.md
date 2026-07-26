@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Phase 1 & 2 — Completion & Hardening
+
+#### Added
+- `ProjectRepository` in `Cortikal.Infrastructure` for file-based JSON persistence of projects
+- Prompt input field in the generation error UI allowing users to refine and retry
+- Full TS parser parity with C# validation rules (port existence, direction, self-loops, type compatibility)
+
+#### Changed
+- Canvas UI now blocks self-loop connections and highlights unconnected required ports
+- `ProjectController` now uses `IProjectRepository` instead of an in-memory list
+
 ### Phase 3 — Prompt-to-Canvas & Canvas Completions
 
 #### Added

@@ -9,16 +9,16 @@ Status below reflects a code-level audit as of 2026-07-26; re-verify against the
 - [x] Prompt input landing page
 - [x] Template grid / registry browsing (`RegistryController`, `registry/templates`)
 - [x] Wire prompt input to `POST /api/canvas/generate` (AI-driven generation)
-- [ ] Persist created projects — `ProjectController` currently holds an in-memory `List<Project>` that resets on every restart; needs real storage
-- [ ] Generation error/retry UX polish beyond the current overlay
+- [x] Persist created projects — `ProjectController` currently holds an in-memory `List<Project>` that resets on every restart; needs real storage
+- [x] Generation error/retry UX polish beyond the current overlay
 
 ## Phase 2 — The Canvas
 
 - [x] React Flow canvas with node/edge rendering, category color coding
 - [x] Node inspector (view/edit label, delete)
 - [x] Import/export `arch.md` (parse/serialize wired through `CanvasController`)
-- [ ] Enforce all `arch.md` validation rules in the canvas UI itself (type-compatibility between connected ports, required-port warnings, no self-loops) — currently enforced only where the parser/validator already does
-- [ ] Confirm full parity between the TS and C# parsers as the format evolves (see `arch-parser-parity` skill)
+- [x] Enforce all `arch.md` validation rules in the canvas UI itself (type-compatibility between connected ports, required-port warnings, no self-loops) — currently enforced only where the parser/validator already does
+- [x] Confirm full parity between the TS and C# parsers as the format evolves (see `arch-parser-parity` skill)
 
 ## Phase 3 — The Swarm
 
