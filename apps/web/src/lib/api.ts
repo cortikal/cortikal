@@ -51,7 +51,6 @@ export const ApiClient = {
     });
     const data = await res.json();
     if (!res.ok) {
-      // data may contain { errors: string[] } from ArchParseResult
       const msg =
         data?.errors?.[0] ?? data?.error ?? "Failed to generate architecture";
       throw new Error(msg);
@@ -62,38 +61,53 @@ export const ApiClient = {
       errors: string[];
     };
   },
+  // Projects
+  getProjects: async () => {
+    const res = await fetch(`${API_BASE}/project`);
+    if (!res.ok) throw new Error("Failed to fetch projects");
+    return res.json();
+  },
+  createProject: async (name: string, description: string) => {
+    const res = await fetch(`${API_BASE}/project`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, description }),
+    });
+    if (!res.ok) throw new Error("Failed to create project");
+    return res.json();
+  },
   // Swarm
   swarm: {
-      start: async (projectId: string, archMdContent: string) => {
-        const res = await fetch(`${API_BASE}/swarm/start/${projectId}`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ archMdContent }),
-        });
-        if (!res.ok) throw new Error("Failed to start swarm");
-        return res; // No JSON returned (Accepted status)
-      },
-      pause: async () => {
-        await fetch(`${API_BASE}/swarm/pause`, { method: "POST" });
-      },
-      resume: async () => {
-        await fetch(`${API_BASE}/swarm/resume`, { method: "POST" });
-      },
-      cancel: async () => {
-        await fetch(`${API_BASE}/swarm/cancel`, { method: "POST" });
-      },
-      getState: async () => {
-        const res = await fetch(`${API_BASE}/swarm/state`);
-        if (!res.ok) throw new Error("Failed to get state");
-        return res.json();
-      },
-      getTranscript: async (projectId: string) => {
-        const res = await fetch(`${API_BASE}/swarm/transcripts/${projectId}`);
-        if (!res.ok) throw new Error("Failed to fetch transcript");
-        return res.json();
-      }
+    start: async (projectId: string, archMdContent: string) => {
+      const res = await fetch(`${API_BASE}/swarm/start/${projectId}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ archMdContent }),
+      });
+      if (!res.ok) throw new Error("Failed to start swarm");
+      return res;
     },
-    // Mission Control
+    pause: async () => {
+      await fetch(`${API_BASE}/swarm/pause`, { method: "POST" });
+    },
+    resume: async () => {
+      await fetch(`${API_BASE}/swarm/resume`, { method: "POST" });
+    },
+    cancel: async () => {
+      await fetch(`${API_BASE}/swarm/cancel`, { method: "POST" });
+    },
+    getState: async () => {
+      const res = await fetch(`${API_BASE}/swarm/state`);
+      if (!res.ok) throw new Error("Failed to get state");
+      return res.json();
+    },
+    getTranscript: async (projectId: string) => {
+      const res = await fetch(`${API_BASE}/swarm/transcripts/${projectId}`);
+      if (!res.ok) throw new Error("Failed to fetch transcript");
+      return res.json();
+    },
+  },
+  // Mission Control
   missionControl: {
     getStats: async (projectId: string) => {
       const res = await fetch(`${API_BASE}/missioncontrol/stats/${projectId}`);
